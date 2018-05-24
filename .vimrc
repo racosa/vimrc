@@ -18,8 +18,11 @@ Plug 'vhda/verilog_systemverilog.vim'
 " Syntastic
 Plug 'scrooloose/syntastic'
 
-" Latex - vimtex
-"Plug 'lervag/vimtex'
+" Using a non-master branch
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+
+" Goyo
+Plug 'junegunn/goyo.vim'
 
 " Initialize plugin system
 call plug#end()
@@ -29,44 +32,40 @@ set enc=utf-8
 set fenc=utf-8
 set termencoding=utf-8
 
-" disable vi compatibility (emulation of old bugs)
+" Disable vi compatibility (emulation of old bugs)
 set nocompatible
 
-" use indentation of previous line
+" Use indentation of previous line
 set autoindent
 
-" use intelligent indentation for C
+" Use intelligent indentation for C
 set smartindent
 
-" configure tabwidth and insert spaces instead of tabs
+" Configure tabwidth and insert spaces instead of tabs
 set tabstop=2        " tab width is 4 spaces
 set shiftwidth=2     " indent also with 4 spaces
 set expandtab        " expand tabs to spaces
 set textwidth=80
 
-" highlight matching braces
+" Highlight matching braces
 set showmatch
 
-" intelligent comments
+" Intelligent comments
 set comments=sl:/*,mb:\ *,elx:\ */
 
 " Line numbers
 set number
 
-" in normal mode F2 will save the file
-nmap <F2> :w<CR>
-
-" in insert mode F2 will exit insert, save, enters insert again
+" In normal mode F2 will save the file
+nmap <F2> :w<CR> 
+" In insert mode F2 will exit insert, save, enters insert again
 imap <F2> <ESC>:w<CR>i
-
-" switch between header/source with F4
-" map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
-
 " Cycling through buffers
 :nnoremap <F4> :bnext<CR>
 :nnoremap <F3> :bprevious<CR>
 
 filetype on
+filetype plugin indent on
 
 " Setting airline theme
 let g:airline_theme='solarized'
@@ -89,12 +88,16 @@ let g:airline#extensions#tabline#enabled = 1
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
-
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+
 " Enabling verilator checker
 let g:syntastic_verilog_checkers = ['verilator']
 
-filetype plugin indent on
+" YCM config - installed from AUR vim-youcompleteme-git
+let g:ycm_global_ycm_extra_conf = '/usr/share/vim/vimfiles/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+let g:ycm_server_python_interpreter = '/usr/bin/python2'
+
+
