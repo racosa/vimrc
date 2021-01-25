@@ -9,25 +9,41 @@ Plug 'vim-airline/vim-airline'
 " Airline themes
 Plug 'vim-airline/vim-airline-themes'
 
-" Solarized Themes
-Plug 'altercation/vim-colors-solarized'
+" Ale
+Plug 'dense-analysis/ale'
 
-" Verilog/SystemVerilog syntax
-Plug 'vhda/verilog_systemverilog.vim'
+" vim-fugitive (git)
+Plug 'tpope/vim-fugitive'
 
-" Syntastic
-Plug 'scrooloose/syntastic'
+" vim-gitgutter (modified lines - git)
+Plug 'airblade/vim-gitgutter'
+
+"fuzzy finder
+Plug 'junegunn/fzf.vim'
+
+" deoplete (asynchronous completion)
+Plug 'Shougo/deoplete.nvim'
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
+
+" auto-pairs
+Plug 'jiangmiao/auto-pairs'
 
 " Using a non-master branch
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
-
-" Goyo
-Plug 'junegunn/goyo.vim'
+" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 
 " Initialize plugin system
 call plug#end()
 
-" set UTF-8 encoding
+" Set theme
+set background=dark
+colorscheme solarized8 
+
+" Setting airline theme
+let g:airline_theme='solarized'
+let g:airline_solarized_bg='dark'
+
+" Set UTF-8 encoding
 set enc=utf-8
 set fenc=utf-8
 set termencoding=utf-8
@@ -58,24 +74,24 @@ set number
 
 " In normal mode F2 will save the file
 nmap <F2> :w<CR> 
-" In insert mode F2 will exit insert, save, enters insert again
+" In insert mode F2 will exit insert, save, enter insert again
 imap <F2> <ESC>:w<CR>i
+
+" In normal mode F5 will indent the whole file automatically
+nmap <F5> gg=G<CR> 
+" In insert mode F5 will exit insert, indent the whole file automatically and enter insert again
+imap <F5> <ESC>gg=G<CR>i
+
 " Cycling through buffers
 :nnoremap <F4> :bnext<CR>
 :nnoremap <F3> :bprevious<CR>
 
+" Check file types
 filetype on
 filetype plugin indent on
 
-" Setting airline theme
-let g:airline_theme='solarized'
-let g:airline_solarized_bg='dark'
-
-" Configuring solarized theme
-set t_Co=256
-syntax enable
-set background=dark
-colorscheme solarized
+" Set spelllang on .tex files
+autocmd FileType tex setlocal spell spelllang=en_us
 
 " NERDTree config
 map <F9> :NERDTreeToggle<CR>
@@ -83,21 +99,27 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 
 " air-line config
 let g:airline#extensions#tabline#enabled = 1
-
-" Syntastic config
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
-" Enabling verilator checker
-let g:syntastic_verilog_checkers = ['verilator']
+let g:airline#extensions#ale#enabled = 1
 
 " YCM config - installed from AUR vim-youcompleteme-git
-let g:ycm_global_ycm_extra_conf = '/usr/share/vim/vimfiles/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-let g:ycm_server_python_interpreter = '/usr/bin/python2'
+" let g:ycm_global_ycm_extra_conf = '/usr/share/vim/vimfiles/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+" let g:ycm_server_python_interpreter = '/usr/bin/python2'
 
+" ALE config
+" highlight clear ALEErrorSign
+" highlight clear ALEWarningSign 
+let g:ALEErrorSign = '#073642'
 
+" deoplete config
+let g:deoplete#enable_at_startup = 1
+
+let g:ale_fixers = {
+\   'javascript': ['eslint'],
+\   'html': ['prettier'],
+\   'css': ['prettier'],
+\}
+
+function! RemoveTrailingWhiteSpaces()
+    %s/\s\+$//e
+endfunction
+autocmd BufWritePre *.js :call RemoveTrailingWhiteSpaces()
