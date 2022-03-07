@@ -1,24 +1,18 @@
 " vim-plug
 call plug#begin('~/.vim/plugged')
-" NERDTree
+
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
-" Airline
 Plug 'vim-airline/vim-airline'
 
-" Airline themes
 Plug 'vim-airline/vim-airline-themes'
 
-" Ale
 Plug 'dense-analysis/ale'
 
-" vim-fugitive (git)
 Plug 'tpope/vim-fugitive'
 
-" vim-gitgutter (modified lines - git)
 Plug 'airblade/vim-gitgutter'
 
-"fuzzy finder
 Plug 'junegunn/fzf.vim'
 
 " deoplete (asynchronous completion)
@@ -26,16 +20,17 @@ Plug 'Shougo/deoplete.nvim'
 Plug 'roxma/nvim-yarp'
 Plug 'roxma/vim-hug-neovim-rpc'
 
-" auto-pairs
 Plug 'jiangmiao/auto-pairs'
 
-" Using a non-master branch
-" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+Plug 'tpope/vim-surround'
+
+Plug 'lifepillar/vim-solarized8'
 
 " Initialize plugin system
 call plug#end()
 
 " Set theme
+set termguicolors
 set background=dark
 colorscheme solarized8 
 
@@ -86,6 +81,9 @@ imap <F5> <ESC>gg=G<CR>i
 :nnoremap <F4> :bnext<CR>
 :nnoremap <F3> :bprevious<CR>
 
+" Toggle signs and line numbers
+nmap <F10> :set nu! <bar> :GitGutterToggle <bar> :ALEToggle <CR>
+
 " Check file types
 filetype on
 filetype plugin indent on
@@ -101,13 +99,7 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 
-" YCM config - installed from AUR vim-youcompleteme-git
-" let g:ycm_global_ycm_extra_conf = '/usr/share/vim/vimfiles/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-" let g:ycm_server_python_interpreter = '/usr/bin/python2'
-
 " ALE config
-" highlight clear ALEErrorSign
-" highlight clear ALEWarningSign 
 let g:ALEErrorSign = '#073642'
 
 " deoplete config
