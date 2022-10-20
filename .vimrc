@@ -29,6 +29,9 @@ Plug 'lifepillar/vim-solarized8'
 " Initialize plugin system
 call plug#end()
 
+" <Leader>
+let mapleader=','
+
 " Set theme
 set termguicolors
 set background=dark
@@ -66,6 +69,29 @@ set comments=sl:/*,mb:\ *,elx:\ */
 
 " Line numbers
 set number
+
+" Search and replace the word under the cursor or visual selection
+:nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
+:vnoremap <Leader>s y :%s/\<<C-R>"\>/
+
+" Search word under cursor or visual selection using ag (all files)
+:nnoremap <silent> <Leader>ag yw :Ag <C-R><C-W><CR>
+:vnoremap <silent> <Leader>ag y :Ag <C-R>"<CR>
+
+function! Escape(text) abort
+  return escape(a:text, '\/.*$^~[]')
+endfunction
+
+function! SearchAndReplaceAll(newText) abort
+  exe "cfdo %s/" . Escape(getreg('"')) . "/" . Escape(a:newText) . "/g | update"  
+  exe "cfdo :bd"
+endfunction
+
+:command -nargs=1 -bar Ags call SearchAndReplaceAll(<f-args>)
+
+" Copy and pasting to the system clipboard
+:map <Leader>y "+y
+:map <Leader>p "+p
 
 " In normal mode F2 will save the file
 nmap <F2> :w<CR> 
@@ -105,13 +131,48 @@ let g:ALEErrorSign = '#073642'
 " deoplete config
 let g:deoplete#enable_at_startup = 1
 
+" TAB completion
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
+function! FormatBlazePre(buffer, lines) abort
+  let l:index = 0
+  let l:lines_new = range(len(a:lines))
+
+  for l:line in a:lines
+    let l:lines_new[l:index] = substitute(l:line, '{{>', '\\{{>', 'g')
+    let l:index = l:index + 1
+  endfor
+
+  return l:lines_new
+endfunction
+ 
+function! FormatBlazePost(buffer, lines) abort
+  let l:index = 0
+  let l:lines_new = range(len(a:lines))
+
+  for l:line in a:lines
+    let l:lines_new[l:index] = substitute(l:line, '\\{{>', '{{>', 'g')
+    let l:index = l:index + 1
+  endfor
+
+  return l:lines_new
+endfunction
+  
 let g:ale_fixers = {
-\   'javascript': ['eslint'],
-\   'html': ['prettier'],
+\   'javascript': ['eslint', 'prettier'],
+\   'html': ['FormatBlazePre', 'prettier', 'FormatBlazePost'],
 \   'css': ['prettier'],
+\   'python': ['yapf'],
 \}
+let g:ale_fix_on_save = 1
 
 function! RemoveTrailingWhiteSpaces()
-    %s/\s\+$//e
+  %s/\s\+$//e
 endfunction
 autocmd BufWritePre *.js :call RemoveTrailingWhiteSpaces()
+
+set history=10000
+
+" Enable wildmenu 
+set wildmenu
+set wildmode=list:longest,list:full
